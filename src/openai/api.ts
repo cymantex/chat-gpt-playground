@@ -1,7 +1,7 @@
 import { Configuration, OpenAIApi } from "openai";
 import { ModelId } from "./types";
 
-const model: ModelId = "gpt-3.5-turbo";
+const model: ModelId = "text-davinci-003";
 
 const openai = new OpenAIApi(
   new Configuration({
@@ -9,13 +9,23 @@ const openai = new OpenAIApi(
   })
 );
 
-export const askQuestion = async (prompt: string) => {
+export const generateCode = async (prompt: string) => {
+  return openai
+    .createCompletion({
+      model,
+      prompt,
+      max_tokens: 4096 - prompt.length,
+    })
+    .then((response) => response.data.choices);
+};
+
+export const askQuestion = async (question: string) => {
   return openai
     .createChatCompletion({
       model,
       messages: [
         {
-          content: prompt,
+          content: question,
           role: "user",
         },
       ],
