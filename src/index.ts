@@ -1,10 +1,15 @@
-import { askQuestion, generateCode } from "./openai/api";
+import { askQuestion } from "./openai/api";
 
-const main = async () => {
-  //console.log(await askQuestion("What should I eat for dinner?"));
+const main = async (argv: string[]) => {
+  if (process.argv.length !== 3) {
+    console.error("Usage: ts-node src/index.ts <question>");
+    process.exit(1);
+  }
 
-  console.log(await generateCode("Generate a single Java function using a IllegalArgumentException")
-    .catch((error) => console.error(error.response.data)));
+  const question = argv[2];
+  const choices = await askQuestion(question);
+
+  choices.forEach((choice) => console.log(choice.message?.content));
 };
 
-main();
+main(process.argv);
